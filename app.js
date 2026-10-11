@@ -472,18 +472,24 @@ function renderFlowSaveGeneral(main) {
 function renderFlowSaveGeneralResult(main, p) {
   const { amount, age, risk } = p;
 
-  // Calculate allocation
+  // Calculate allocation - ensure percentages sum to 100%
   let equityPct = Math.max(20, Math.min(80, 100 - age));
   if (risk === 'low') equityPct = Math.max(15, equityPct - 20);
   if (risk === 'high') equityPct = Math.min(85, equityPct + 15);
 
   const emergencyPct = 20; // 20% in liquid emergency
   const goldPct = 10;      // 10% in sovereign gold / gold ETF
-  const debtPct = Math.max(10, 100 - equityPct - emergencyPct - goldPct);
+  const minDebtPct = 5;    // minimum 5% debt for stability
+
+  // Cap equity so total doesn't exceed 100%
+  const maxEquityPct = 100 - emergencyPct - goldPct - minDebtPct;
+  if (equityPct > maxEquityPct) equityPct = maxEquityPct;
+
+  const debtPct = 100 - equityPct - emergencyPct - goldPct;
 
   const categories = [
     { name: 'Equity / Index Funds', pct: equityPct, desc: 'Nifty 50 & Flexi Cap for compounding', returnRate: 12, icon: '', term: 'Index Fund' },
-    { name: 'Emergency Cushion', pct: emergencyPct, desc: 'Liquid funds or sweep-in FD (instant access)', returnRate: 4.5, icon: '', term: 'Liquid Fund' },
+    { name: 'Emergency Cushion', pct: emergencyPct, desc: 'Liquid funds or sweep-in FD (instant access) — builds your <span class="term-tag" data-term="Emergency Fund" style="font-size:10px;vertical-align:middle">?</span>', returnRate: 4.5, icon: '', term: 'Liquid Fund' },
     { name: 'Debt & Stability', pct: debtPct, desc: 'Short-duration debt & corporate bonds', returnRate: 7, icon: '', term: 'Debt Fund' },
     { name: 'Gold Hedge', pct: goldPct, desc: 'Gold ETF / sovereign gold funds', returnRate: 6, icon: '', term: null },
   ];
@@ -679,7 +685,7 @@ function renderFlowSaveGoal(main, params = {}) {
             ${GOAL_PRESETS.map(g => `
               <div class="goal-type-card ${g.id === selectedGoal ? 'selected' : ''}" data-goal-id="${g.id}">
                 <span class="goal-type-icon">${g.icon}</span>
-                <span class="goal-type-name">${g.name}</span>
+                <span class="goal-type-name">${g.name}${g.id === 'Emergency Fund' ? ' <span class="term-tag" data-term="Emergency Fund" style="font-size:10px;vertical-align:middle;margin-left:4px">?</span>' : ''}</span>
               </div>
             `).join('')}
           </div>
@@ -877,7 +883,7 @@ function renderFlowSaveGoalResult(main, p) {
         <div class="stat-box">
           <div class="stat-box-label">Conservative (${conservativeRate}% p.a.)</div>
           <div class="stat-box-value">${formatINR(sipConservative)}</div>
-          <div class="stat-box-sub">Safest (Debt/FD focus)</div>
+          <div class="stat-box-sub">Safest (Debt/<span class="term-tag" data-term="FD" style="font-size:10px;vertical-align:middle">?</span> focus)</div>
         </div>
         <div class="stat-box featured">
           <div class="stat-box-label">Expected (${expectedRate}% p.a.)</div>
@@ -889,7 +895,7 @@ function renderFlowSaveGoalResult(main, p) {
       <!-- Fund Category Guidance -->
       <div class="form-card" style="padding:18px 20px;margin-bottom:20px">
         <div style="font-size:12px;font-weight:700;color:var(--groww-primary);text-transform:uppercase;margin-bottom:6px">Where to put this money</div>
-        <h4 style="font-size:16px;font-weight:800;color:var(--text-main);margin-bottom:8px">${catRecommendation}</h4>
+        <h4 style="font-size:16px;font-weight:800;color:var(--text-main);margin-bottom:8px">${catRecommendation.replace('Hybrid Mutual Funds', 'Hybrid Mutual Funds <span class="term-tag" data-term="Hybrid Fund" style="font-size:11px;vertical-align:middle">?</span>')}</h4>
         <p style="font-size:13px;color:var(--text-secondary);line-height:1.5">${catWhy}</p>
       </div>
 
@@ -1144,9 +1150,15 @@ function renderFlowPurchaseCompareResult(main, p) {
   const fvExpected = lumpSumFV(investedC, 11, tenure);
   const fvGood = lumpSumFV(investedC, 14, tenure);
 
-  const netPoor = fvPoor - (price + intC);
-  const netExpected = fvExpected - (price + intC);
-  const netGood = fvGood - (price + intC);
+  // Path A leftover grows at savings rate (3.5%)
+  const leftoverA = Math.max(0, cash - price);
+  const savingsGrowth = Math.pow(1 + 0.035 / 12, tenure);
+  const pathAFinal = leftoverA * savingsGrowth;
+
+  // Net advantage of Path C over Path A: investment FV - Path A final - loan interest paid
+  const netPoor = fvPoor - pathAFinal - intC;
+  const netExpected = fvExpected - pathAFinal - intC;
+  const netGood = fvGood - pathAFinal - intC;
 
   // SWP test: can the invested money pay the EMIs?
   const swpExp = swpSimulation(investedC, emiC, 11, tenure);
@@ -1195,7 +1207,7 @@ function renderFlowPurchaseCompareResult(main, p) {
               <td>${formatINR(loanC)}</td>
             </tr>
             <tr>
-              <td>Monthly EMI</td>
+              <td>Monthly EMI <span class="term-tag" data-term="EMI" style="font-size:10px;vertical-align:middle">?</span></td>
               <td>₹0</td>
               <td>${formatINR(emiB)}</td>
               <td>${formatINR(emiC)}</td>
@@ -1265,8 +1277,8 @@ function renderFlowPurchaseCompareResult(main, p) {
       <div class="disclaimer-box">
         <strong>The Honest Verdict:</strong>
         ${canPayFull
-      ? 'If you value 100% peace of mind and zero monthly liabilities, <strong>Path A (Pay Full)</strong> is unbeatable. If you want your capital compounding long term and have steady monthly salary to service EMIs, <strong>Path C (Invest the rest)</strong> mathematically builds more wealth.'
-      : 'Since you don\'t have full cash for 100% upfront payment, <strong>Path B or C</strong> is recommended. Ensure your monthly EMI does not exceed 30% of your take-home pay.'
+      ? 'If you value 100% peace of mind and zero monthly liabilities, <strong>Path A (Pay Full)</strong> is unbeatable. If you want your capital compounding long term and have steady monthly salary to service <span class="term-tag" data-term="EMI" style="font-size:10px;vertical-align:middle">?</span> EMIs, <strong>Path C (Invest the rest)</strong> mathematically builds more wealth.'
+      : 'Since you don\'t have full cash for 100% upfront payment, <strong>Path B or C</strong> is recommended. Ensure your monthly <span class="term-tag" data-term="EMI" style="font-size:10px;vertical-align:middle">?</span> EMI does not exceed 30% of your take-home pay.'
     }
       </div>
 
@@ -1562,13 +1574,13 @@ function renderFDsMock(main) {
     <div class="explore-container">
       <div class="hero-header">
         <h1 class="hero-title">Fixed Deposits</h1>
-        <p class="hero-subtitle">Bank and corporate FD comparisons (illustrative sample rates as of October 2026, not live quotes)</p>
+        <p class="hero-subtitle">Bank and corporate <span class="term-tag" data-term="FD" style="font-size:12px;vertical-align:middle">?</span> comparisons (illustrative sample rates as of October 2026, not live quotes)</p>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:10px">
         <div class="explore-item-card">
           <div>
-            <div class="explore-item-name">Shriram Finance FD</div>
+            <div class="explore-item-name">Shriram Finance <span class="term-tag" data-term="FD" style="font-size:10px;vertical-align:middle">?</span></div>
             <div class="explore-item-sub">Tenure: 1-5 Years • AAA Rated</div>
           </div>
           <div>
@@ -1577,7 +1589,7 @@ function renderFDsMock(main) {
         </div>
         <div class="explore-item-card">
           <div>
-            <div class="explore-item-name">Axis Bank FD</div>
+            <div class="explore-item-name">Axis Bank <span class="term-tag" data-term="FD" style="font-size:10px;vertical-align:middle">?</span></div>
             <div class="explore-item-sub">Tenure: 15-18 Months</div>
           </div>
           <div>
@@ -1586,7 +1598,7 @@ function renderFDsMock(main) {
         </div>
         <div class="explore-item-card">
           <div>
-            <div class="explore-item-name">HDFC Bank FD</div>
+            <div class="explore-item-name">HDFC Bank <span class="term-tag" data-term="FD" style="font-size:10px;vertical-align:middle">?</span></div>
             <div class="explore-item-sub">Tenure: 1-3 Years</div>
           </div>
           <div>
@@ -1595,11 +1607,11 @@ function renderFDsMock(main) {
         </div>
       </div>
 
-      <p style="font-size:11px;color:var(--text-muted);margin-top:8px;text-align:center">Sample interest rates shown are illustrative as of October 2026. Actual FD rates vary by bank, tenure, and investor category.</p>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:8px;text-align:center">Sample interest rates shown are illustrative as of October 2026. Actual <span class="term-tag" data-term="FD" style="font-size:10px;vertical-align:middle">?</span> rates vary by bank, tenure, and investor category.</p>
 
       <div style="margin-top:20px;text-align:center">
         <button class="btn btn-primary" id="btn-switch-to-goals-fd">
-          Plan an FD Target in Goals
+          Plan an <span class="term-tag" data-term="FD" style="font-size:11px;vertical-align:middle">?</span> Target in Goals
         </button>
       </div>
     </div>

@@ -100,23 +100,23 @@ The application was evaluated across three core criteria: Mathematical Accuracy 
 
 ### 1. Mathematics and Edge Cases Evaluation
 
-| Test | Expected Result | Actual Result | Notes |
+| Test | Expected Result | Actual Result | What You Fixed |
 | :--- | :--- | :--- | :--- |
 | **EMI Case 1 (Car Loan)**<br>Principal: ₹8,00,000, 9% p.a., 36 months | ₹25,439.79 per month (Excel `PMT`) | ₹25,439.79 | Standardized to reducing-balance monthly compounding formula. |
-| **EMI Case 2 (Home Loan)**<br>Principal: ₹60,00,000, 8.5% p.a., 240 months | ₹52,069.39 per month (Excel `PMT`) | ₹52,069.39 |  |
+| **EMI Case 2 (Home Loan)**<br>Principal: ₹60,00,000, 8.5% p.a., 240 months | ₹52,069.39 per month (Excel `PMT`) | ₹52,069.39 | Handled multi-decade compounding precision without floating point drift. |
 | **SIP FV Case 1 (Medium Term)**<br>₹10,000/mo, 12% p.a., 36 months | ₹4,35,076.47 total corpus (Excel `FV`) | ₹4,35,076.47 | Aligned with standard annuity due compounding factor $(1+r)$ for monthly SIPs. |
-| **SIP FV Case 2 (Long Term)**<br>₹5,000/mo, 10% p.a., 60 months | ₹3,90,411.91 total corpus (Excel `FV`) | ₹3,90,411.91 |  |
+| **SIP FV Case 2 (Long Term)**<br>₹5,000/mo, 10% p.a., 60 months | ₹3,90,411.91 total corpus (Excel `FV`) | ₹3,90,411.91 | Verified against compound interest tables. |
 | **SIP Required (Goal Planning)**<br>Target ₹8,00,000, 10% p.a., 36 months | ₹18,988.84 per month | ₹18,988.84 | Inverted annuity factor cleanly to derive exact required monthly investment. |
 | **SWP Simulation 1 (Corpus Survival)**<br>Corpus ₹5,00,000, ₹5,000/mo, 8% p.a., 120 months | Corpus survives full term (never exhausted; final balance ₹1,95,089.94) | Corpus survives full term (exhaustedAt = null; final balance ₹1,95,089.94) | Implemented monthly loop compounding returns prior to sequential deduction. |
 | **SWP Simulation 2 (Corpus Depletion)**<br>Corpus ₹1,00,000, ₹10,000/mo, 0% p.a., 24 months | Corpus runs out at Month 10 | Corpus runs out at Month 10 (exhaustedAt = 10) | Added exhaustion index tracking and clamped balances to zero. |
 | **Edge Case: Zero Interest Rate**<br>Loan ₹1,20,000, 0% interest, 12 months | ₹10,000 per month ($P / n$) | ₹10,000 | Added guard clause to avoid division by zero when $r = 0$. |
 | **Edge Case: Zero Amount**<br>Loan principal ₹0, or SIP monthly ₹0 | ₹0 output | ₹0 | Added early return guard clause returning 0 when input amount <= 0. |
-| **Savings already above the goal (goal flow)**<br>Target date selected in the past (e.g. 3 months ago) | Form validation rejection with negative month alert | Form displays: "Target date must be in the future" and halts submission | Enforced `min` attribute on HTML date input and added validation in `monthsUntil()`. |
-| **Down Payment Larger Than Price**<br>Target ₹5,00,000, existing savings ₹6,00,000 | ₹0 additional SIP required | ₹0 | Clamped remaining required amount using `Math.max(0, target - saved)` to prevent negative SIP output. |
+| **Edge Case: Invalid Timeframe**<br>Zero or negative months entered for goal timeline | Form validation rejection | Form displays: "Please specify a target timeframe in months." and halts submission | Added validation on months input with min=1 and explicit error message. |
+| **Edge Case: Down Payment Larger Than Price**<br>Target ₹5,00,000, existing savings ₹6,00,000 | ₹0 additional SIP required | ₹0 | Clamped remaining required amount using `Math.max(0, target - saved)` to prevent negative SIP output. |
 
 ### 2. Honesty and Transparency Evaluation
 
-| Test | Expected Result | Actual Result | Notes |
+| Test | Expected Result | Actual Result | What You Fixed |
 | :--- | :--- | :--- | :--- |
 | **Path 1 Wealth Projections** | Every growth projection must clearly show return rate assumption and downside risk note. | Blended rate displayed (~10.4% p.a.); disclaimer notes: "Equity portions fluctuate day-to-day and can have negative returns over short 1-2 year periods." | Added explicit disclaimer box warning that equity values fluctuate and past returns are not guaranteed. |
 | **Path 2 Goal Projections** | Conservative and expected return rates must be labeled as assumptions, not promised returns. | Rates labeled as Conservative (6.5%) and Expected (10%); includes interactive "-15% Market Drop Stress Test" card. | Added drawdown stress-test calculation and advice on shifting to debt near target date. |
@@ -127,7 +127,7 @@ The application was evaluated across three core criteria: Mathematical Accuracy 
 
 ### 3. Jargon Elimination Evaluation (Unexplained Term = Fail)
 
-| Test | Expected Result | Actual Result | Notes |
+| Test | Expected Result | Actual Result | What You Fixed |
 | :--- | :--- | :--- | :--- |
 | **SIP (Systematic Investment Plan)** | Unexplained acronym = FAIL. Must explain concept in plain terms without jargon. | PASS. Explained in glossary and in context as fixed monthly investments averaging market highs and lows. | Added interactive click-to-open glossary modal for all instances of "SIP". |
 | **SWP (Systematic Withdrawal Plan)** | Unexplained acronym = FAIL. Must clarify monthly withdrawal mechanism. | PASS. Explained in Path 3 comparison and glossary as periodic withdrawals to fund EMIs or expenses. | Added plain-language definition emphasizing risk of corpus depletion. |
