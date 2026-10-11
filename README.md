@@ -49,19 +49,19 @@ First-time Gen Z investors in India frequently have disposable income and strong
   * **Path A (100% Cash):** Zero debt and zero interest outflow, but exhausts liquidity.
   * **Path B (50% Down Payment + Manageable EMI):** Balanced liquidity with low interest burden.
   * **Path C (Minimum Down + Invest the Rest and Pay EMIs):** Evaluates whether investing surplus capital into equity/hybrid funds yields higher post-tax compounding than the loan interest cost.
-* Highlights the required break-even return after LTCG tax (12.5%) and provides a transparent verdict regarding debt-free peace of mind vs. wealth compounding.
+* Highlights the required break-even return after an assumed 12.5% LTCG tax (reflecting the current post-July 2024 equity LTCG rate for gains above ₹1.25 Lakh; explicitly labeled as an illustrative modeling assumption, not tax advice).
 
 ---
 
 ## Additional Features
 
 * **Active Goals Dashboard:** Track ongoing goals, view milestone progress bars, and run monthly check-ins to update saved balances in `localStorage`.
-* **Interactive Groww AutoPay Setup:** Full modal flow simulating monthly SIP mandate setup with date selection (1st, 5th, 10th, 15th, 20th) and payment mode selection (UPI AutoPay / NetBanking e-Mandate).
+* **Simulated Groww AutoPay Setup:** Interactive prototype simulation demonstrating the handoff to monthly SIP mandate setup with date selection (1st, 5th, 10th, 15th, 20th) and payment mode selection (UPI AutoPay / NetBanking e-Mandate). Clearly marked as simulated; no real bank data, mandates, or payments are processed.
 * **Financial Glossary Modal:** Educational bottom-sheet explainers for key concepts: SIP, SWP, Index Funds, Liquid Funds, Debt Funds, LTCG tax, and Emergency Funds.
 * **Working Explore Tabs:**
-  * **Stocks:** Real-time Indian index mockups (NIFTY 50, SENSEX) and top market movers.
+  * **Stocks:** Sample data mockups of major Indian indices (NIFTY 50, SENSEX) and trending stocks (static illustrative sample data only, not live market feeds).
   * **Mutual Funds:** Curated categories (Index funds, Flexi cap, Liquid funds).
-  * **FDs:** Bank and NBFC fixed deposit rate comparisons (Shriram Finance 8.6%, Axis Bank 7.2%, HDFC Bank 7.1%).
+  * **FDs:** Fixed deposit comparisons with illustrative benchmark rates (sample figures as of October 2026 for demonstration; not live quotes or official bank rate cards).
   * **Profile:** Investor details, KYC status, data reset utilities, and built-in financial math test diagnostics.
 * **Theme Support:** Dark mode (default Groww dark slate palette) and Light mode toggle with immediate visual feedback.
 * **Clean and Professional Aesthetics:** No emojis, high-contrast readable typography (`Plus Jakarta Sans`), and Groww brand emerald accent (`#00D09C`).

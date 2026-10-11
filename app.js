@@ -26,7 +26,7 @@ const GLOSSARY = {
   'Liquid Fund': 'Debt mutual fund that invests in very short-term money market instruments (up to 91 days). Extremely low risk and allows redemption within 24 hours. Ideal for emergency funds.',
   'Debt Fund': 'Mutual funds investing in government bonds, corporate debentures, and money market instruments. Less volatile than equity, suitable for 1-3 year time horizons.',
   'Hybrid Fund': 'Funds that invest in a balanced mix of equities (stocks) and debt. Provides moderate capital growth while cushioning against severe market drawdowns.',
-  'LTCG': 'Long-Term Capital Gains Tax. Tax on investment gains held longer than a statutory threshold (e.g. 1 year for equity mutual funds at 12.5% for gains above ₹1.25 Lakh).',
+  'LTCG': 'Long-Term Capital Gains Tax. Tax on profits from investments held longer than the statutory threshold (for listed equity mutual funds held >12 months, taxed at 12.5% on gains exceeding ₹1.25 Lakh per financial year under post-July 2024 rules). In this tool, 12.5% is an illustrative modeling assumption and does not constitute tax advice.',
   'FD': 'Fixed Deposit. Guaranteed fixed return investment with a scheduled bank. High capital safety up to ₹5 Lakh insurance per bank via DICGC.',
   'Emergency Fund': 'A dedicated cash buffer covering 3 to 6 months of essential living expenses (rent, food, EMIs, insurance). Kept strictly in liquid funds or sweep-in FDs.'
 };
@@ -1253,7 +1253,10 @@ function renderFlowPurchaseCompareResult(main, p) {
             </span>
           </div>
           <div style="font-size:12px;color:var(--text-muted);margin-top:4px">
-            Break-even return needed after LTCG tax: <strong>${bep.toFixed(2)}% p.a.</strong>
+            Break-even return needed: <strong>${bep.toFixed(2)}% p.a.</strong>
+            <span style="display:block;font-size:11px;color:var(--text-secondary);margin-top:2px">
+              (Assumption: 12.5% LTCG tax per post-July 2024 equity rules for gains > ₹1.25 Lakh. Illustrative assumption only, not tax advice.)
+            </span>
           </div>
         </div>
       </div>
@@ -1432,7 +1435,7 @@ function renderStocksMock(main) {
     <div class="explore-container">
       <div class="hero-header">
         <h1 class="hero-title">Stocks Explore</h1>
-        <p class="hero-subtitle">Real-time Indian market indices and trending stocks</p>
+        <p class="hero-subtitle">Sample data mockup of Indian market indices and trending stocks (static illustration, not live feeds)</p>
       </div>
 
       <div class="market-ticker-bar">
@@ -1559,7 +1562,7 @@ function renderFDsMock(main) {
     <div class="explore-container">
       <div class="hero-header">
         <h1 class="hero-title">Fixed Deposits</h1>
-        <p class="hero-subtitle">High-interest bank & corporate FDs insured up to ₹5 Lakh</p>
+        <p class="hero-subtitle">Bank and corporate FD comparisons (illustrative sample rates as of October 2026, not live quotes)</p>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:10px">
@@ -1592,7 +1595,9 @@ function renderFDsMock(main) {
         </div>
       </div>
 
-      <div style="margin-top:24px;text-align:center">
+      <p style="font-size:11px;color:var(--text-muted);margin-top:8px;text-align:center">Sample interest rates shown are illustrative as of October 2026. Actual FD rates vary by bank, tenure, and investor category.</p>
+
+      <div style="margin-top:20px;text-align:center">
         <button class="btn btn-primary" id="btn-switch-to-goals-fd">
           Plan an FD Target in Goals
         </button>
@@ -1717,12 +1722,12 @@ function openSIPModal({ title, amount, category }) {
       </div>
     </div>
 
-    <div class="disclaimer-box" style="margin-bottom:18px">
-      No real money will be deducted in this prototype. This demonstrates the seamless handoff to Groww's auto-debit infrastructure.
+    <div class="disclaimer-box" style="margin-bottom:18px;background:rgba(245, 158, 11, 0.08);border-left-color:var(--status-warning)">
+      <strong>Simulated Demo:</strong> This is a non-transactional prototype simulation. No real money will be deducted, and no actual bank mandate is registered.
     </div>
 
     <button class="btn btn-primary" id="btn-confirm-sip">
-      Confirm Monthly SIP Mandate
+      Confirm Simulated SIP Mandate
     </button>
   `;
 
@@ -1730,7 +1735,7 @@ function openSIPModal({ title, amount, category }) {
 
   document.getElementById('btn-confirm-sip')?.addEventListener('click', () => {
     closeSIPModal();
-    showToast(`Monthly SIP of ${formatINR(amount)} successfully scheduled!`, '');
+    showToast(`Simulated SIP of ${formatINR(amount)} scheduled (demo only)!`, '');
   });
 
   modal.removeAttribute('hidden');
