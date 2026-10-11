@@ -1151,7 +1151,6 @@ function renderFlowPurchaseCompareResult(main, p) {
   const fvGood = lumpSumFV(investedC, 14, tenure);
 
   // Path A leftover grows at savings rate (3.5%)
-  const leftoverA = Math.max(0, cash - price);
   const savingsGrowth = Math.pow(1 + 0.035 / 12, tenure);
   const pathAFinal = leftoverA * savingsGrowth;
 
