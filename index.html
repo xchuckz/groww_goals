@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Groww Goals - Plan, Save & Invest for Gen Z</title>
+  <meta name="description" content="Goal-first financial planning for first-time Indian investors aged 20-26. Set clear targets, get realistic outcome projections, and make informed financial decisions.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=2.0.2">
+</head>
+<body>
+  <div class="app-wrapper">
+
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="groww-logo" id="logo-home" title="Go to Goals Home">
+          <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="8" fill="#00D09C"/>
+            <path d="M9 22L15 16L19 20L24 11" stroke="#0B0F19" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19 11H24V16" stroke="#0B0F19" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="brand-text">
+            <span class="brand-name">groww</span>
+            <span class="brand-badge">GOALS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle Dark/Light Mode" title="Toggle Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button class="header-profile-btn" id="header-profile-btn" aria-label="Profile">
+          <span class="avatar-initials">SC</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main" id="app-main" role="main">
+      <!-- Dynamic views injected here -->
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+      <button class="nav-item" data-tab="stocks" id="nav-stocks">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+          <polyline points="17 6 23 6 23 12"></polyline>
+        </svg>
+        <span>Stocks</span>
+      </button>
+
+      <button class="nav-item" data-tab="mutual-funds" id="nav-mf">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 6v6l4 2"></path>
+        </svg>
+        <span>Mutual Funds</span>
+      </button>
+
+      <button class="nav-item" data-tab="fds" id="nav-fds">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+          <line x1="2" y1="10" x2="22" y2="10"></line>
+        </svg>
+        <span>FDs</span>
+      </button>
+
+      <button class="nav-item active" data-tab="goals" id="nav-goals">
+        <div class="nav-highlight"></div>
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <circle cx="12" cy="12" r="6"></circle>
+          <circle cx="12" cy="12" r="2"></circle>
+        </svg>
+        <span>Goals</span>
+      </button>
+
+      <button class="nav-item" data-tab="profile" id="nav-profile">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>Profile</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- Term Explanation Modal / Bottom Sheet -->
+  <div class="modal-overlay" id="term-modal" hidden role="dialog" aria-modal="true" aria-labelledby="term-title">
+    <div class="modal-card">
+      <div class="modal-drag-handle"></div>
+      <header class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge">Financial Concept</span>
+          <h2 id="term-title">Concept</h2>
+        </div>
+        <button class="modal-close-btn" id="modal-close" aria-label="Close modal">&times;</button>
+      </header>
+      <div class="modal-body" id="term-body"></div>
+    </div>
+  </div>
+
+  <!-- Interactive Groww SIP Bottom Sheet Modal -->
+  <div class="modal-overlay" id="sip-modal" hidden role="dialog" aria-modal="true" aria-labelledby="sip-modal-title">
+    <div class="modal-card">
+      <div class="modal-drag-handle"></div>
+      <header class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-badge-green">Groww AutoPay Setup</span>
+          <h2 id="sip-modal-title">Start Monthly SIP</h2>
+        </div>
+        <button class="modal-close-btn" id="sip-modal-close" aria-label="Close modal">&times;</button>
+      </header>
+      <div class="modal-body" id="sip-modal-body">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js?v=2.0.2"></script>
+</body>
+</html>

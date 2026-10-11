@@ -1,0 +1,32 @@
+# Dependencies & Package Managers
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment Variables & Sensitive Credentials
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# IDE & Editor Configurations
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Build Outputs, Temporary & Log Files
+dist/
+build/
+*.log
+*.tmp
+.cache/
