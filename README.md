@@ -94,6 +94,54 @@ All calculations in [`math.js`](math.js) are deterministic, pure functions with 
 
 ---
 
+## Evaluations (Deliverable 3)
+
+The application was evaluated across three core criteria: Mathematical Accuracy (benchmarked against spreadsheet formulas), Honesty (transparency of assumptions and risk disclosure), and Jargon Elimination (plain-English clarity for first-time Gen Z investors).
+
+### 1. Mathematics and Edge Cases Evaluation
+
+| Test | Expected Result | Actual Result | What You Fixed |
+| :--- | :--- | :--- | :--- |
+| **EMI Case 1 (Car Loan)**<br>Principal: ₹8,00,000, 9% p.a., 36 months | ₹25,439.79 per month (Excel `PMT`) | ₹25,439.79 | Standardized to reducing-balance monthly compounding formula. |
+| **EMI Case 2 (Home Loan)**<br>Principal: ₹60,00,000, 8.5% p.a., 240 months | ₹52,069.39 per month (Excel `PMT`) | ₹52,069.39 | Handled multi-decade compounding precision without floating point drift. |
+| **SIP FV Case 1 (Medium Term)**<br>₹10,000/mo, 12% p.a., 36 months | ₹4,35,076.47 total corpus (Excel `FV`) | ₹4,35,076.47 | Aligned with standard annuity due compounding factor $(1+r)$ for monthly SIPs. |
+| **SIP FV Case 2 (Long Term)**<br>₹5,000/mo, 10% p.a., 60 months | ₹3,90,411.91 total corpus (Excel `FV`) | ₹3,90,411.91 | Verified against compound interest tables. |
+| **SIP Required (Goal Planning)**<br>Target ₹8,00,000, 10% p.a., 36 months | ₹18,988.84 per month | ₹18,988.84 | Inverted annuity factor cleanly to derive exact required monthly investment. |
+| **SWP Simulation 1 (Corpus Survival)**<br>Corpus ₹5,00,000, ₹5,000/mo, 8% p.a., 120 months | Corpus survives full term (never exhausted; final balance ₹1,95,089.94) | Corpus survives full term (exhaustedAt = null; final balance ₹1,95,089.94) | Implemented monthly loop compounding returns prior to sequential deduction. |
+| **SWP Simulation 2 (Corpus Depletion)**<br>Corpus ₹1,00,000, ₹10,000/mo, 0% p.a., 24 months | Corpus runs out at Month 10 | Corpus runs out at Month 10 (exhaustedAt = 10) | Added exhaustion index tracking and clamped balances to zero. |
+| **Edge Case: Zero Interest Rate**<br>Loan ₹1,20,000, 0% interest, 12 months | ₹10,000 per month ($P / n$) | ₹10,000 | Added guard clause to avoid division by zero when $r = 0$. |
+| **Edge Case: Zero Amount**<br>Loan principal ₹0, or SIP monthly ₹0 | ₹0 output | ₹0 | Added early return guard clause returning 0 when input amount <= 0. |
+| **Edge Case: Past Target Date**<br>Target date selected in the past (e.g. 3 months ago) | Form validation rejection with negative month alert | Form displays: "Target date must be in the future" and halts submission | Enforced `min` attribute on HTML date input and added validation in `monthsUntil()`. |
+| **Edge Case: Down Payment Larger Than Price**<br>Target ₹5,00,000, existing savings ₹6,00,000 | ₹0 additional SIP required | ₹0 | Clamped remaining required amount using `Math.max(0, target - saved)` to prevent negative SIP output. |
+
+### 2. Honesty and Transparency Evaluation
+
+| Test | Expected Result | Actual Result | What You Fixed |
+| :--- | :--- | :--- | :--- |
+| **Path 1 Wealth Projections** | Every growth projection must clearly show return rate assumption and downside risk note. | Blended rate displayed (~10.4% p.a.); disclaimer notes: "Equity portions fluctuate day-to-day and can have negative returns over short 1-2 year periods." | Added explicit disclaimer box warning that equity values fluctuate and past returns are not guaranteed. |
+| **Path 2 Goal Projections** | Conservative and expected return rates must be labeled as assumptions, not promised returns. | Rates labeled as Conservative (6.5%) and Expected (10%); includes interactive "-15% Market Drop Stress Test" card. | Added drawdown stress-test calculation and advice on shifting to debt near target date. |
+| **Path 3 Purchase Comparison** | Loan vs. investment outcome must state tax rate assumptions and breakeven requirements honestly. | Displays Poor (6%), Expected (11%), and Bull (14%) cases; highlights breakeven return with post-July 2024 12.5% LTCG assumption. | Labeled LTCG tax as an illustrative assumption and provided an objective verdict on debt-free peace of mind vs. compounding. |
+| **Stock and Index Mockups** | Static mock data must not be misrepresented as real-time market data. | Explicitly labeled as "Sample data mockup of Indian market indices (static illustration, not live feeds)." | Replaced "Real-time" claims with clear "sample data mockup" labels in UI and README. |
+| **Fixed Deposit Rate Table** | Hardcoded bank rates must not be presented as permanent or official quotes. | Labeled as "Illustrative sample rates as of October 2026, not live quotes." | Added date-stamped illustrative disclaimer to avoid misleading users with stale bank rates. |
+| **AutoPay SIP Setup Modal** | Must be clearly identified as a prototype mock, not a live payment mandate. | Header displays "Simulated Demo" and modal states: "Prototype Simulation: No real money will be deducted." | Removed live registration copy and added prominent yellow simulation alert banner. |
+
+### 3. Jargon Elimination Evaluation (Unexplained Term = Fail)
+
+| Test | Expected Result | Actual Result | What You Fixed |
+| :--- | :--- | :--- | :--- |
+| **SIP (Systematic Investment Plan)** | Unexplained acronym = FAIL. Must explain concept in plain terms without jargon. | PASS. Explained in glossary and in context as fixed monthly investments averaging market highs and lows. | Added interactive click-to-open glossary modal for all instances of "SIP". |
+| **SWP (Systematic Withdrawal Plan)** | Unexplained acronym = FAIL. Must clarify monthly withdrawal mechanism. | PASS. Explained in Path 3 comparison and glossary as periodic withdrawals to fund EMIs or expenses. | Added plain-language definition emphasizing risk of corpus depletion. |
+| **EMI (Equated Monthly Instalment)** | Unexplained acronym = FAIL. Must define principal + interest payment. | PASS. Explained as a fixed monthly payment covering loan principal plus bank interest. | Added glossary entry and breakdowns in table headers. |
+| **Index Fund** | Unexplained term = FAIL. Must explain what an index is and why it matters. | PASS. Explained as a fund mirroring Nifty 50 or Sensex with low expense ratios and broad diversification. | Added plain-English explanation highlighting passive tracking and lower fees. |
+| **Liquid Fund** | Unexplained term = FAIL. Must explain capital safety and liquidity. | PASS. Explained as debt funds investing in instruments up to 91 days, ideal for emergency funds with 24h withdrawal. | Connected directly to the Emergency Cushion bucket in Path 1. |
+| **Debt Fund** | Unexplained term = FAIL. Must explain lower volatility and fixed income. | PASS. Explained as bond investments offering capital stability over 1 to 3 year horizons. | Defined in glossary and recommended for short-horizon goals. |
+| **Hybrid Fund** | Unexplained term = FAIL. Must explain asset mix. | PASS. Explained as a blend of equity and debt providing moderate capital growth with downside cushion. | Defined in glossary and recommended for 3 to 5 year goals. |
+| **LTCG (Long-Term Capital Gains)** | Unexplained acronym = FAIL. Must state holding period and tax rate. | PASS. Explained as tax on equity held >12 months, taxed at 12.5% for gains above ₹1.25 Lakh under post-July 2024 rules. | Added comprehensive glossary definition and contextual notes. |
+| **FD (Fixed Deposit)** | Unexplained acronym = FAIL. Must state bank guarantee limits. | PASS. Explained as locked lump-sum bank deposits insured up to ₹5 Lakh by DICGC. | Added deposit insurance safety note in glossary. |
+| **Emergency Fund** | Unexplained concept = FAIL. Must state concrete size rule. | PASS. Defined as 3 to 6 months of mandatory living expenses (rent, food, EMIs) kept in liquid assets. | Structured as the first required step in all financial roadmaps. |
+
+---
+
 ## Running Locally
 
 This prototype uses native ES modules (`type="module"`), so it runs on any local HTTP server:
